@@ -34,3 +34,5 @@ modules:
         path: appstream.patch
       - type: patch
         path: appstream2.patch
+      - type: patch
+        path: appstream3.patch
