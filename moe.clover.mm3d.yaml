@@ -4,13 +4,20 @@ runtime-version: '5.15-23.08'
 sdk: org.kde.Sdk
 command: mm3d
 finish-args:
+  # Qt has issues on Wayland in 5.15-23.08 SDK (only tested on Gnome)
+  # * The main window content size and/or position flickers.
+  # * Model viewport flickers between old frame sometimes.
+  # * Opening, closing, and reopening Materials -> Texture Coordinates...
+  #   causes the texture to be transparent after clicking it until
+  #   interacting with some other part of the window.
+  - --socket=x11
   # OpenGL access
   - --device=dri
   # Wayland access
-  - --socket=wayland
+  #- --socket=wayland
   # X11 + XShm access
   - --share=ipc
-  - --socket=fallback-x11
+  #- --socket=fallback-x11
   # File access
   - --filesystem=host
 modules:
@@ -20,19 +27,8 @@ modules:
       # specify where GLU was just installed to
       # NOTE: "-L/app/lib" is set in LDFLAGS by flatpak-builder but mm3d configure doesn't use it for testing GL LIBS.
       - "--with-GL-cflags=-L/app/lib"
-      # specify where Qt is in the SDK
-      - "--with-Qt-bin-dir=/usr/bin"
-      - "--with-Qt-include-dir=/usr/include"
-      - "--with-Qt-lib-dir=/usr/lib"
-      - "--with-Qt-translations-dir=/usr/translations"
     sources:
       - type: git
         url: https://github.com/zturtleman/mm3d.git
-        tag: v1.3.14
-        commit: 726579d29a4980378be7b1dfced70c22c21f210b
-      - type: patch
-        path: appstream.patch
-      - type: patch
-        path: appstream2.patch
-      - type: patch
-        path: appstream3.patch
+        tag: v1.3.15
+        commit: ee6df326e0ec3d6f5f8e103670dead04adebe9af
